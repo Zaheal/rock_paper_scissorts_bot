@@ -19,16 +19,16 @@ def choose_bot() -> str:
 
 def choose_who_won(bot_choose: str, person_choose: str) -> str:
     rule_game: dict = {
-        RU_LEXICON['rock']: [RU_LEXICON['scissorts'], RU_LEXICON['paper']],
-        RU_LEXICON['scissorts']: [RU_LEXICON['paper'], RU_LEXICON['rock']],
-        RU_LEXICON['paper']: [RU_LEXICON['rock'], RU_LEXICON['scissorts']]
+        RU_LEXICON['rock']: RU_LEXICON['scissorts'],
+        RU_LEXICON['scissorts']: RU_LEXICON['paper'],
+        RU_LEXICON['paper']: RU_LEXICON['rock']
     }
 
     if bot_choose == person_choose:
         return 'draw'
     elif rule_game[person_choose][0] == bot_choose:
         return 'win'
-    elif rule_game[person_choose][1] == bot_choose:
+    else:
         return 'lose'
 
 
