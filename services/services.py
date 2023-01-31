@@ -1,35 +1,24 @@
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
-from random import randint
+from random import choice
 from lexicon import RU_LEXICON
 
 
-def choose_bot() -> str:
-    rule_game: dict = {
-        0: RU_LEXICON['rock'],
-        1: RU_LEXICON['scissorts'],
-        2: RU_LEXICON['paper']
-    }
-    r = randint(0, 2)
+def _choose_bot() -> str:
+    result = choice('rock', 'paper', 'scissorts')
 
-    return rule_game[r]
-    
+    return result    
 
-def choose_who_won(bot_choose: str, person_choose: str) -> str:
+
+def choose_who_won(person_choose: str) -> str:
     rule_game: dict = {
         RU_LEXICON['rock']: RU_LEXICON['scissorts'],
         RU_LEXICON['scissorts']: RU_LEXICON['paper'],
         RU_LEXICON['paper']: RU_LEXICON['rock']
     }
+    bot_choose: str = _choose_bot()
 
     if bot_choose == person_choose:
         return 'draw'
-    elif rule_game[person_choose][0] == bot_choose:
+    elif rule_game[person_choose] == bot_choose:
         return 'win'
     else:
         return 'lose'
-
-
-    
