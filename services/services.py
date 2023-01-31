@@ -1,9 +1,12 @@
-from random import choice
+import random
+import sqlite3
+
 from lexicon import RU_LEXICON
+from aiogram.types import Message
 
 
 def _choose_bot() -> str:
-    result = choice([RU_LEXICON['rock'], RU_LEXICON['paper'], RU_LEXICON['scissorts']])
+    result = random.choice([RU_LEXICON['rock'], RU_LEXICON['paper'], RU_LEXICON['scissorts']])
 
     return result    
 
@@ -22,3 +25,22 @@ def choose_who_won(person_choose: str) -> str:
         return 'win'
     else:
         return 'lose'
+
+
+def create_users_db(message: Message):
+    db = sqlite3.connect(r'database/users.sqlite')
+    cursor = db.cursor()
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+        user_id BIGINT PRIMARY KEY,
+        count_game INT,
+        count_win INT);
+    """)
+
+    db.commit()
+
+    cursor.execute('SELECT user_id FROM users WHERE user_id=?', (message.from_user.id, ))
+    if cursor.fetchone() is None:
+        cursor.execute('INSERT INTO users VALUES (?, ?, ?)', (message.from_user.id, 0, 0))
+    
+    db.commit()

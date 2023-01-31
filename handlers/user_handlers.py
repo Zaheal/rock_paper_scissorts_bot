@@ -3,11 +3,12 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import Message, ReplyKeyboardRemove
 
 from keyboards_data import create_agree_keyboard, create_game_keyboards
-from services import choose_who_won
+from services import choose_who_won, create_users_db
 from lexicon import RU_LEXICON
 
 
 async def process_start_command(message: Message):
+    create_users_db(message)
     await message.answer(RU_LEXICON['/start'], reply_markup=create_agree_keyboard())
 
 
