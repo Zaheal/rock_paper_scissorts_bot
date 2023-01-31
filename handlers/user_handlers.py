@@ -32,7 +32,7 @@ async def process_game_answer(message: Message):
     elif result == 'lose':
         await message.answer(RU_LEXICON['lose'], reply_markup=create_agree_keyboard())
     elif result == 'draw':
-        await message.answer(RU_LEXICON['draw'], reply_markup=create_agree_keyboard())
+        await message.answer(RU_LEXICON['draw'], reply_markup=create_game_keyboards())
     
 
 def register_user_handlers(dp: Dispatcher):

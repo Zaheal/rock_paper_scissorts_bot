@@ -3,7 +3,7 @@ from lexicon import RU_LEXICON
 
 
 def _choose_bot() -> str:
-    result = choice('rock', 'paper', 'scissorts')
+    result = choice([RU_LEXICON['rock'], RU_LEXICON['paper'], RU_LEXICON['scissorts']])
 
     return result    
 

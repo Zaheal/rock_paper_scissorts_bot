@@ -1,7 +1,7 @@
 import logging
 import asyncio
 
-from aiogram import Bot, Dispatcher, executor
+from aiogram import Bot, Dispatcher
 from configs import load_config, Config
 from handlers import register_user_handlers, register_other_handlers
 
