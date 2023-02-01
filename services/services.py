@@ -28,19 +28,57 @@ def choose_who_won(person_choose: str) -> str:
 
 
 def create_users_db(message: Message):
-    db = sqlite3.connect(r'database/users.sqlite')
-    cursor = db.cursor()
+    try:
+        db = sqlite3.connect(r'database/users.sqlite')
+        cursor = db.cursor()
 
-    cursor.execute("""CREATE TABLE IF NOT EXISTS users(
-        user_id BIGINT PRIMARY KEY,
-        count_game INT,
-        count_win INT);
-    """)
+        cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+            user_id BIGINT PRIMARY KEY,
+            count_game INT,
+            count_win INT);
+        """)
 
-    db.commit()
+        cursor.execute('SELECT user_id FROM users WHERE user_id=?', (message.from_user.id, ))
+        if cursor.fetchone() is None:
+            cursor.execute('INSERT INTO users VALUES (?, ?, ?)', (message.from_user.id, 0, 0))
+        
+        db.commit()
 
-    cursor.execute('SELECT user_id FROM users WHERE user_id=?', (message.from_user.id, ))
-    if cursor.fetchone() is None:
-        cursor.execute('INSERT INTO users VALUES (?, ?, ?)', (message.from_user.id, 0, 0))
-    
-    db.commit()
+        db.close()
+    except sqlite3.Error as error:
+        print("Ошибка в create", error)
+    finally:
+        if db:
+            db.close()
+
+
+
+def add_count_game(message: Message):
+    try:
+        db = sqlite3.connect(r'database/users.sqlite')
+        cursor = db.cursor()
+
+        cursor.execute("UPDATE users SET count_game = count_game + ? WHERE user_id=?", (1, message.from_user.id))
+        db.commit()
+
+        db.close()
+    except sqlite3.Error as error:
+        print("Ошибка в add_count_game", error)
+    finally:
+        if db:
+            db.close()
+
+def add_count_win(message: Message):
+    try:
+        db = sqlite3.connect(r'database/users.sqlite')
+        cursor = db.cursor()
+
+        cursor.execute("UPDATE users SET count_win = count_win + ? WHERE user_id=?;", (1, message.from_user.id))
+        db.commit()
+        
+        db.close()
+    except sqlite3.Error as error:
+        print('Ошибка в add_count_win', error)
+    finally:
+        if db:
+            db.close()

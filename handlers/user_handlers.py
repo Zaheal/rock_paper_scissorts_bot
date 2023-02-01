@@ -3,7 +3,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import Message, ReplyKeyboardRemove
 
 from keyboards_data import create_agree_keyboard, create_game_keyboards
-from services import choose_who_won, create_users_db
+from services import choose_who_won, create_users_db, add_count_game, add_count_win
 from lexicon import RU_LEXICON
 
 
@@ -21,6 +21,7 @@ async def process_disagree_answer(message: Message):
 
 
 async def process_agree_answer(message: Message):
+    add_count_game(message)
     await message.answer(RU_LEXICON['agree'], reply_markup=create_game_keyboards())
 
 
@@ -29,10 +30,12 @@ async def process_game_answer(message: Message):
     result: str = choose_who_won(person_choose)
 
     if result == 'win':
+        add_count_win(message)
         await message.answer(RU_LEXICON['win'], reply_markup=create_agree_keyboard())
     elif result == 'lose':
         await message.answer(RU_LEXICON['lose'], reply_markup=create_agree_keyboard())
     elif result == 'draw':
+        add_count_game(message)
         await message.answer(RU_LEXICON['draw'], reply_markup=create_game_keyboards())
     
 
