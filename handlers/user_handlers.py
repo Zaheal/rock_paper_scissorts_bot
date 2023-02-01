@@ -5,6 +5,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards_data import create_agree_keyboard, create_game_keyboards
 from services import choose_who_won, create_users_db, add_count_game, add_count_win
 from lexicon import RU_LEXICON
+import sqlite3
 
 
 async def process_start_command(message: Message):
@@ -14,6 +15,17 @@ async def process_start_command(message: Message):
 
 async def process_help_command(message: Message):
     await message.answer(RU_LEXICON['/help'], reply_markup=create_agree_keyboard())
+
+
+async def now_count_game_win(message: Message):
+    db = sqlite3.connect(r'database/users.sqlite')
+    cursor = db.cursor()
+
+    statistics = cursor.execute("SELECT count_game, count_win FROM users WHERE user_id=?", (message.from_user.id, )).fetchone()
+
+    await message.answer(RU_LEXICON['/statistics'] + str(statistics[0]) + ', ' + str(statistics[1]))
+
+    db.close()
 
 
 async def process_disagree_answer(message: Message):
@@ -42,6 +54,7 @@ async def process_game_answer(message: Message):
 def register_user_handlers(dp: Dispatcher):
     dp.register_message_handler(process_start_command, commands='start')
     dp.register_message_handler(process_help_command, commands='help')
+    dp.register_message_handler(now_count_game_win, commands='statistics')
     dp.register_message_handler(process_disagree_answer, text=RU_LEXICON['no'])
     dp.register_message_handler(process_agree_answer, text=RU_LEXICON['yes'])
     dp.register_message_handler(process_game_answer, Text(equals=[RU_LEXICON['rock'],
